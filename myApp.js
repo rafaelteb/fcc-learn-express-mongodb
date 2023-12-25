@@ -32,31 +32,86 @@ const createAndSavePerson = (done) => {
 };
 
 const createManyPeople = (arrayOfPeople, done) => {
-  done(null /*, data*/);
+  Person.create(arrayOfPeople, (err, data) => {
+    if(err){
+      console.log(err);
+    }
+    done(null, data);
+  });
 };
 
 const findPeopleByName = (personName, done) => {
-  done(null /*, data*/);
+  Person.find({name: personName}, (err, data) => {
+    if(err){
+      console.log(err);
+    }
+    console.log(data);
+    done(null, data);
+  });
 };
 
 const findOneByFood = (food, done) => {
-  done(null /*, data*/);
+  Person.findOne({favoriteFoods: food}, (err, data) => {
+    if(err){
+      console.log(err);
+    }
+    console.log(data);
+    done(null, data);
+  });
 };
 
 const findPersonById = (personId, done) => {
-  done(null /*, data*/);
+  Person.findById(personId, (err, data) => {
+    if(err){
+      console.log(err);
+    }
+    console.log(data);
+    done(null, data);
+  });
 };
 
 const findEditThenSave = (personId, done) => {
   const foodToAdd = "hamburger";
+  Person.findById(personId, (err, data) => {
+    if (err) {
+      console.error(err);
+      return done(err); // Propagate the error to the callback
+    }
 
-  done(null /*, data*/);
+    // Update the data
+    data.favoriteFoods.push(foodToAdd);
+
+    // Save the updated document
+    data.save((saveErr, savedData) => {
+      if (saveErr) {
+        console.error(saveErr);
+        return done(saveErr); // Propagate the save error to the callback
+      }
+
+      console.log(savedData);
+      done(null, savedData); // Call the callback with the updated data
+    });
+  });
 };
 
 const findAndUpdate = (personName, done) => {
   const ageToSet = 20;
-
-  done(null /*, data*/);
+  Person.findOneAndUpdate(
+    // Filter
+    {name: personName}, 
+    // Update
+    {age: ageToSet},
+    // Options
+    {new: true},
+    // Callback
+      (err, data) => {
+      if (err) {
+        console.error(err);
+        return done(err); 
+      }
+      console.log(data);
+      done(null, data);
+    });
 };
 
 const removeById = (personId, done) => {
